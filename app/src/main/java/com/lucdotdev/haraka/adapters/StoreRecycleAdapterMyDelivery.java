@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.lucdotdev.haraka.R;
 import com.lucdotdev.haraka.models.Delivery;
 
@@ -44,8 +45,8 @@ public class StoreRecycleAdapterMyDelivery extends FirestoreRecyclerAdapter<Deli
     }
 
     @Override
-    public void onDataChanged() {
-        super.onDataChanged();
+    public void onError(@NonNull FirebaseFirestoreException e) {
+        super.onError(e);
         if(getItemCount()==0){
             onEmptyList.onEmpty(true);
 
@@ -53,6 +54,13 @@ public class StoreRecycleAdapterMyDelivery extends FirestoreRecyclerAdapter<Deli
             onEmptyList.onEmpty(false);
         }
     }
+
+    @Override
+    public void onDataChanged() {
+        super.onDataChanged();
+
+    }
+
 
 
 

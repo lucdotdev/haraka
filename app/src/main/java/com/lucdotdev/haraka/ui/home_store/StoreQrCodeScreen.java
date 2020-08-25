@@ -83,4 +83,7 @@ public class StoreQrCodeScreen extends AppCompatActivity {
         finish();
     }
 
+    public void goToStoreMain(View view) {
+        finish();
+    }
 }

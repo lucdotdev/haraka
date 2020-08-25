@@ -118,7 +118,8 @@ public class StoreAddDelivery extends AppCompatActivity {
             final Map<String, Object> item = new HashMap<>();
             item.put("name", deliveryName.getText().toString().trim());
             item.put("delivery_id", uuid.toString());
-            item.put("livreur_id", "");
+            //TODO:remove this
+            item.put("livreur_id", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid());
             item.put("store_id", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid());
             item.put("status", 1);
             item.put("description", deliveryDesc.getText().toString());

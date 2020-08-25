@@ -35,7 +35,7 @@
             />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/LivreurMyDeliveryRecycle"
+            android:id="@+id/livreurMyDeliveryRecycle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"

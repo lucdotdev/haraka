@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -23,12 +24,13 @@ import java.util.Objects;
 
 public class LivreurHomeScreen extends AppCompatActivity implements LivreurRecycleAdapterMyDelivery.OnEmptyList, LivreurRecycleAdapterMyDelivery.OnListItemClick{
 
+    private FirestoreRecyclerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.livreur_home_screen);
 
-        RecyclerView myDeliveryRecycleView = findViewById(R.id.myDeliveryRecycle);
+        RecyclerView myDeliveryRecycleView = findViewById(R.id.livreurMyDeliveryRecycle);
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -39,20 +41,16 @@ public class LivreurHomeScreen extends AppCompatActivity implements LivreurRecyc
         Query query = firebaseFirestore.collection("delivery")
                 .whereEqualTo("livreur_id", Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
         FirestoreRecyclerOptions<Delivery> options = new FirestoreRecyclerOptions.Builder<Delivery>()
-                .setQuery(query, new SnapshotParser<Delivery>() {
-                    @NonNull
-                    @Override
-                    public Delivery parseSnapshot(@NonNull DocumentSnapshot snapshot) {
-                        Delivery item = snapshot.toObject(Delivery.class);
-                        assert item != null;
-                        item.setId(snapshot.getId());
-                        return item;
-                    }
+                .setQuery(query, snapshot -> {
+                    Delivery item = snapshot.toObject(Delivery.class);
+                    assert item != null;
+                    item.setId(snapshot.getId());
+                    return item;
                 })
                 .build();
 
 
-       FirestoreRecyclerAdapter adapter = new LivreurRecycleAdapterMyDelivery(options, (LivreurRecycleAdapterMyDelivery.OnListItemClick) this, (Context) this, (LivreurRecycleAdapterMyDelivery.OnEmptyList) this);
+       adapter = new LivreurRecycleAdapterMyDelivery(options, (LivreurRecycleAdapterMyDelivery.OnListItemClick) this, (Context) this, (LivreurRecycleAdapterMyDelivery.OnEmptyList) this);
 
 
         myDeliveryRecycleView .setLayoutManager(new LinearLayoutManager(this));
@@ -61,12 +59,27 @@ public class LivreurHomeScreen extends AppCompatActivity implements LivreurRecyc
     }
 
     @Override
-    public void onItemClick(Delivery item, int position) {
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    @Override
+    public void onItemClick(Delivery item, int position) {
+        Intent i = new Intent(this, LivreurScanQr.class);
+        i.putExtra("id", item.getId());
+        startActivity(i);
     }
 
     @Override
     public void onEmpty(boolean k) {
 
     }
+
 }

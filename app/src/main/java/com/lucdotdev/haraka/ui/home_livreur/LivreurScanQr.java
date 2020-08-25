@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -21,6 +22,8 @@ import com.lucdotdev.haraka.helpers.CustomLoadingDialog;
 import com.lucdotdev.haraka.utils.OrientedQrScan;
 
 import java.util.Objects;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 
 public class LivreurScanQr extends AppCompatActivity {
@@ -46,9 +49,9 @@ public class LivreurScanQr extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Cancelled", LENGTH_LONG).show();
             } else {
-                confirmDelivery(result.getContents());
+                confirmDelivery(Objects.requireNonNull(result.getContents()));
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -61,9 +64,34 @@ public class LivreurScanQr extends AppCompatActivity {
         integrator.initiateScan();
     }
 
-    public void confirmDelivery(String delivery_id){
+    public void confirmDelivery(String id){
         customLoadingDialog.startLoading();
-        firebaseFirestore.collection("delivery").document(Objects.requireNonNull(extras.getString("id"))).update("status", 2).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+
+        String delivery_id = extras.getString("id");
+        assert delivery_id != null;
+        firebaseFirestore.collection("delivery").document(delivery_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+                    if(task.getResult().get("delivery_id")== id){
+                       upDateDelivery(delivery_id);
+                    } else {
+                        Toast.makeText(LivreurScanQr.this, "C'est ne pas le bon QR CODE", LENGTH_LONG).show();
+                    }
+                }
+                else {
+                    customLoadingDialog.dismissLoading();
+                    Toast.makeText(LivreurScanQr.this, "Il y a eu une erreur", LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+
+    public void upDateDelivery(String delivery_id){
+        firebaseFirestore.collection("delivery").document(delivery_id).update("status", 2).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 customLoadingDialog.ok();
@@ -72,8 +100,8 @@ public class LivreurScanQr extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                       customLoadingDialog.dismissLoading();
-                       finish();
+                        customLoadingDialog.dismissLoading();
+                        finish();
                     }
                 }, 2000);
             }

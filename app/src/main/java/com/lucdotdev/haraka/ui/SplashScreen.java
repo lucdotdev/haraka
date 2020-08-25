@@ -10,6 +10,7 @@ import android.os.Handler;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.lucdotdev.haraka.R;
+import com.lucdotdev.haraka.ui.home_livreur.LivreurHomeScreen;
 import com.lucdotdev.haraka.ui.home_livreur.LivreurScanQr;
 import com.lucdotdev.haraka.ui.home_store.StoreHomeScreen;
 
@@ -21,7 +22,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         SharedPreferences prefs = getSharedPreferences("AUTH", MODE_PRIVATE);
-        int type = prefs.getInt("account_type", 1);
+        int type = prefs.getInt("account_type", 2);
        /// boolean isLogin = prefs.getBoolean("is_login", false);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -41,7 +42,7 @@ public class SplashScreen extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent=new Intent(SplashScreen.this, LivreurScanQr.class);
+                        Intent intent=new Intent(SplashScreen.this, LivreurHomeScreen.class);
                         startActivity(intent);
                         finish();
                     }
