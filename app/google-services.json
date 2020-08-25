@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1009398971390",
+    "firebase_url": "https://haraka-livraison.firebaseio.com",
+    "project_id": "haraka-livraison",
+    "storage_bucket": "haraka-livraison.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009398971390:android:b4c6e1e25022515b379eaf",
+        "android_client_info": {
+          "package_name": "com.lucdotdev.haraka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009398971390-lc986v8mnf9j6rbrp89bsu2lofn9book.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAdCXg14G-ogv_pAc6nlfda9o4VTNCYNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1009398971390-lc986v8mnf9j6rbrp89bsu2lofn9book.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

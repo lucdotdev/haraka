@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.lucdotdev.haraka">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".ui.home_store.StoreDeliveryDetails" />
+        <activity android:name=".ui.home_livreur.LivreurScanQr" />
+        <activity android:name=".ui.home_livreur.LivreurHomeScreen" />
+        <activity android:name=".ui.home_store.StoreQrCodeScreen" />
+        <activity android:name=".ui.home_store.StoreMyDelivery" />
+        <activity android:name=".ui.home_store.StoreAddDelivery" />
+        <activity android:name=".ui.home_store.StoreHomeScreen" />
+
+        <activity android:name=".ui.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.LoginScreen" />
+
+
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait"
+            android:name=".utils.OrientedQrScan"/>
+
+    </application>
+
+</manifest>
