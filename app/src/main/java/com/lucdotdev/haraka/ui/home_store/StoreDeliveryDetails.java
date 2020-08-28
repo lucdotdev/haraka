@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lucdotdev.haraka.R;
 
 import java.util.Objects;
@@ -26,23 +28,19 @@ public class StoreDeliveryDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.store_delivery_details);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
-
         extra = getIntent().getExtras();
 
         TextView name = findViewById(R.id.deliveryDetailsName);
-        TextView adress = findViewById(R.id.deliveryDetailsAdress);
-        TextView client = findViewById(R.id.deliveryDetailsDestination);
-        TextView desc = findViewById(R.id.deliveryDetailsDescription);
-        TextView status = findViewById(R.id.deliveryDetailsStatus);
+        //TextView adress = findViewById(R.id.deliveryDetailsAdress);
+        TextView client = findViewById(R.id.deliveryDetailsDestinataire);
+        TextView desc = findViewById(R.id.deliveryDetailsDescr);
+        TextView deliveryStatus = findViewById(R.id.deliveryDetailsStatus);
         ImageView img = findViewById(R.id.deliveryDetailsImage);
+        LinearLayout statusBackground = findViewById(R.id.deliveryDetailsStatusBackground);
 
 
         name.setText(extra.getString("name"));
-        adress.setText(extra.getString("adress"));
+        //adress.setText(extra.getString("adress"));
         client.setText(extra.getString("client"));
         desc.setText(extra.getString("desc"));
 
@@ -54,22 +52,20 @@ public class StoreDeliveryDetails extends AppCompatActivity {
         }
         switch (extra.getInt("status")){
             case 1:
-                status.setText("En cours");
-                //holder.statusIcon.setBackgroundTintList(ColorStateList.valueOf(0xff88B04B));
+                deliveryStatus.setText("En cours");
+                statusBackground.setBackgroundResource(R.drawable.status_pending);
                 break;
             case 2:
-                status.setText("Réussi");
-                //holder.statusIcon.setBackgroundTintList(ColorStateList.valueOf(0xff88B04B));
+                deliveryStatus.setText("Réussi");
+                statusBackground.setBackgroundResource(R.drawable.status_ok);
                 break;
             case 3:
-                status.setText("échec");
-                //holder.statusIcon.setBackgroundTintList(ColorStateList.valueOf(0xffFF6F61));
+                deliveryStatus.setText("échec");
+                statusBackground.setBackgroundResource(R.drawable.status_no);
                 break;
             default:
                 System.out.println("OUUUUUUUUUT");
         }
-
-
 
 
     }

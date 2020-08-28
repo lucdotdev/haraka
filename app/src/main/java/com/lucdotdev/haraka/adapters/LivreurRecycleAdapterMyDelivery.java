@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,7 +40,7 @@ public class LivreurRecycleAdapterMyDelivery extends FirestoreRecyclerAdapter<De
     @NonNull
     @Override
     public LivreurRecycleAdapterMyDeliveryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.store_recycle_item_my_delivery, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.livreur_recycle_item_my_delivery, parent, false);
         return new LivreurRecycleAdapterMyDeliveryViewHolder(view);
     }
 
@@ -59,24 +60,19 @@ public class LivreurRecycleAdapterMyDelivery extends FirestoreRecyclerAdapter<De
     @Override
     protected void onBindViewHolder(@NonNull LivreurRecycleAdapterMyDeliveryViewHolder holder, final int position, @NonNull final Delivery model) {
         holder.deliveryName.setText(model.getName());
-        if(model.getPhotoPath()!=null){
-            Glide.with(i)
-                    .load(model.getPhotoPath())
-                    .fitCenter()
-                    .into(holder.deliveryImage);
-        }
+
         switch (model.getStatus()){
             case 1:
                 holder.deliveryStatus.setText("En cours");
-                holder.statusIcon.setBackgroundTintList(ColorStateList.valueOf(0xff88B04B));
+                holder.statusBackground.setBackgroundResource(R.drawable.status_pending);
                 break;
             case 2:
                 holder.deliveryStatus.setText("Réussi");
-                holder.statusIcon.setBackgroundTintList(ColorStateList.valueOf(0xff88B04B));
+                holder.statusBackground.setBackgroundResource(R.drawable.status_ok);
                 break;
             case 3:
                 holder.deliveryStatus.setText("échec");
-                holder.statusIcon.setBackgroundTintList(ColorStateList.valueOf(0xffFF6F61));
+                holder.statusBackground.setBackgroundResource(R.drawable.status_no);
                 break;
             default:
                 System.out.println("OUUUUUUUUUT");
@@ -89,14 +85,14 @@ public class LivreurRecycleAdapterMyDelivery extends FirestoreRecyclerAdapter<De
         private TextView deliveryName;
         private ImageView deliveryImage;
         private TextView deliveryStatus;
-        private FloatingActionButton statusIcon;
+        private LinearLayout statusBackground;
         public LivreurRecycleAdapterMyDeliveryViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             deliveryName = itemView.findViewById(R.id.deliveryName);
             deliveryImage = itemView.findViewById(R.id.deliveryImage);
             deliveryStatus = itemView.findViewById(R.id.deliveryStatus);
-            statusIcon = itemView.findViewById(R.id.deliveryStatusIcon);
+            statusBackground = itemView.findViewById(R.id.deliveryStatusBackground);
         }
 
         @Override

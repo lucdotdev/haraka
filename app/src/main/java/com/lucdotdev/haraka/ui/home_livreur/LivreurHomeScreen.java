@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -70,16 +72,30 @@ public class LivreurHomeScreen extends AppCompatActivity implements LivreurRecyc
         adapter.stopListening();
     }
 
+
     @Override
     public void onItemClick(Delivery item, int position) {
-        Intent i = new Intent(this, LivreurScanQr.class);
-        i.putExtra("id", item.getId());
+        Intent i = new Intent(this, LivreurDeliveryDetails.class);
+        i.putExtra("name", item.getName());
+        i.putExtra("adress", item.getClient_adress());
+        i.putExtra("status", item.getStatus());
+        i.putExtra("photo", item.getPhotoPath());
+        i.putExtra("desc", item.getDescription());
+        i.putExtra("client", item.getClient_name());
+        i.putExtra("qr_id", item.getDelivery_id());
+        i.putExtra("delivery_id", item.getId());
+        i.putExtra("client_number", item.getClient_number());
         startActivity(i);
     }
 
     @Override
     public void onEmpty(boolean k) {
-
+        TextView notItem = findViewById(R.id.livreurEmptyList);
+        if(!k){
+            notItem.setVisibility(View.GONE);
+        }else {
+            notItem.setVisibility(View.VISIBLE);
+        }
     }
 
 }

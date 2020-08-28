@@ -70,23 +70,20 @@ public class LivreurScanQr extends AppCompatActivity {
 
         String delivery_id = extras.getString("id");
         assert delivery_id != null;
-        firebaseFirestore.collection("delivery").document(delivery_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful())
-                {
-                    if(task.getResult().get("delivery_id")== id){
-                       upDateDelivery(delivery_id);
-                    } else {
-                        Toast.makeText(LivreurScanQr.this, "C'est ne pas le bon QR CODE", LENGTH_LONG).show();
-                    }
-                }
-                else {
-                    customLoadingDialog.dismissLoading();
-                    Toast.makeText(LivreurScanQr.this, "Il y a eu une erreur", LENGTH_LONG).show();
-                }
+        if(extras.getInt("status")==2){
+
+            Toast.makeText(LivreurScanQr.this, "Ce colis a deja ete validé", LENGTH_LONG).show();
+        } else {
+            if(Objects.equals(extras.getString("qr_verif"), id)){
+                upDateDelivery(delivery_id);
+
+            } else {
+                customLoadingDialog.dismissLoading();
+                Toast.makeText(LivreurScanQr.this, "C'est ne pas le bon QR CODE", LENGTH_LONG).show();
+
             }
-        });
+        }
+
     }
 
 

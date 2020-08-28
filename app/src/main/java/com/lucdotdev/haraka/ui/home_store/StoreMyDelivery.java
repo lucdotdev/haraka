@@ -70,7 +70,7 @@ public class StoreMyDelivery extends AppCompatActivity implements StoreRecycleAd
     @Override
     public void onItemClick(Delivery item, int position) {
         Intent i = new Intent(this, StoreDeliveryDetails.class);
-        i.putExtra("name", item.getClient_name());
+        i.putExtra("name", item.getName());
         i.putExtra("adress", item.getClient_adress());
         i.putExtra("status", item.getStatus());
         i.putExtra("photo", item.getPhotoPath());

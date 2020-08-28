@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -14,9 +15,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.lucdotdev.haraka.R;
 import com.lucdotdev.haraka.helpers.CustomLoadingDialog;
 import com.lucdotdev.haraka.helpers.StringsOperations;
+import com.lucdotdev.haraka.ui.home_livreur.LivreurHomeScreen;
 import com.lucdotdev.haraka.ui.home_store.StoreHomeScreen;
 
 import java.util.Objects;
@@ -24,6 +28,7 @@ import java.util.Objects;
 public class LoginScreen extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
     private EditText email;
     private EditText password;
     private final StringsOperations customStringOperation = new StringsOperations();
@@ -36,6 +41,7 @@ public class LoginScreen extends AppCompatActivity {
         this.email = (EditText) findViewById(R.id.loginEmail);
         this.password = (EditText) findViewById(R.id.loginPassword);
         mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
     }
 
@@ -71,18 +77,51 @@ public class LoginScreen extends AppCompatActivity {
         if (k) {
             FirebaseUser user = mAuth.getCurrentUser();
             assert user != null;
-            customLoading.dismissLoading();
-            Intent intent=new Intent(this, StoreHomeScreen.class);
-            intent.putExtra("name", user.getDisplayName());
-            startActivity(intent);
-            finish();
+
+            firebaseFirestore.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                   if(task.isSuccessful()){
+                       DocumentSnapshot t = task.getResult();
+                       assert t != null;
+                       gotToNext((int)t.get("account_type"),(String) t.get("name"));
+                   } else {
+                       Toast.makeText(LoginScreen.this, "Erreur inconue",
+                               Toast.LENGTH_SHORT).show();
+                   }
+                }
+            });
+
+
         } else {
             customLoading.dismissLoading();
-            // If sign in fails, display a message to the user.
             Toast.makeText(this, "L' authentication a échoué." +msg,
                     Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void gotToNext(int i, String name){
+        customLoading.dismissLoading();
+        if(i==1){
+            Intent intent=new Intent(this, StoreHomeScreen.class);
+            intent.putExtra("name", name);
+            saveToPrefs(1, name);
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent=new Intent(this, LivreurHomeScreen.class);
+            startActivity(intent);
+            saveToPrefs(2,name);
+            finish();
+        }
+    }
+    public void saveToPrefs(int accountType,String userName){
+        SharedPreferences.Editor editor = getSharedPreferences("AUTH", MODE_PRIVATE).edit();
+        editor.putInt("account_type", (int) accountType);
+        editor.putString("user_name", userName);
+        editor.apply();
+    }
+
 
 
 }
