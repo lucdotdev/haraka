@@ -17,12 +17,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.lucdotdev.haraka.R;
 import com.lucdotdev.haraka.helpers.CustomLoadingDialog;
 import com.lucdotdev.haraka.helpers.StringsOperations;
 import com.lucdotdev.haraka.ui.home_livreur.LivreurHomeScreen;
 import com.lucdotdev.haraka.ui.home_store.StoreHomeScreen;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class LoginScreen extends AppCompatActivity {
@@ -84,7 +88,28 @@ public class LoginScreen extends AppCompatActivity {
                    if(task.isSuccessful()){
                        DocumentSnapshot t = task.getResult();
                        assert t != null;
-                       gotToNext((int)t.get("account_type"),(String) t.get("name"));
+                       FirebaseInstanceId.getInstance().getInstanceId()
+                               .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                   @Override
+                                   public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                       if (!task.isSuccessful()) {
+                                           return;
+                                       }
+
+                                       // Get new Instance ID token
+                                       String token = Objects.requireNonNull(task.getResult()).getToken();
+                                       Map<String, Object> d = new HashMap<>();
+                                       d.put("message_id", token);
+                                       FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+                                       FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                                       firebaseFirestore.collection("users").document(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid()).update(d);
+
+                                       // Log and toast
+                                      //  String msg = getString(R.string.msg_token_fmt, token);
+                                      // Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                   }
+                               });
+                       gotToNext((Long) t.get("account_type"),(String) t.get("name"));
                    } else {
                        Toast.makeText(LoginScreen.this, "Erreur inconue",
                                Toast.LENGTH_SHORT).show();
@@ -100,7 +125,7 @@ public class LoginScreen extends AppCompatActivity {
         }
     }
 
-    private void gotToNext(int i, String name){
+    private void gotToNext(Long i, String name){
         customLoading.dismissLoading();
         if(i==1){
             Intent intent=new Intent(this, StoreHomeScreen.class);
@@ -110,8 +135,8 @@ public class LoginScreen extends AppCompatActivity {
             finish();
         } else {
             Intent intent=new Intent(this, LivreurHomeScreen.class);
-            startActivity(intent);
             saveToPrefs(2,name);
+            startActivity(intent);
             finish();
         }
     }
@@ -121,7 +146,6 @@ public class LoginScreen extends AppCompatActivity {
         editor.putString("user_name", userName);
         editor.apply();
     }
-
 
 
 }

@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.home_livreur.LivreurDeliveryDetails"></activity>
+
+        <activity android:name=".ui.home_livreur.LivreurDeliveryDetails"/>
         <activity android:name=".ui.home_store.StoreDeliveryDetails" />
         <activity android:name=".ui.home_livreur.LivreurScanQr" />
         <activity android:name=".ui.home_livreur.LivreurHomeScreen" />
@@ -36,6 +37,15 @@
             android:name=".utils.OrientedQrScan"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
+        <service
+            android:name=".services.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
     </application>
+
 
 </manifest>
